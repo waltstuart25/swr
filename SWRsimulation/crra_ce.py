@@ -59,7 +59,7 @@ def crra_ce(cashflows, gamma):
         u = np.mean(gamma_m1_inverse - 1.0 / (gamma_m1 * cashflows ** gamma_m1))
         ce = 1.0 / (1.0 - gamma_m1 * u) ** gamma_m1_inverse
         ce *= calibration_factor
-        ce = np.float(ce)
+        ce = float(ce)  # wjs np.float was deprecated
     elif gamma > 1.0:
         if np.any(np.where(cashflows == 0, 1, 0)):
             return 0.0
@@ -187,7 +187,7 @@ def crra_utility(cashflows, gamma):
         gamma_m1 = gamma - 1.0
         gamma_m1_inverse = 1.0 / gamma_m1
         u = np.sum(gamma_m1_inverse - 1.0 / (gamma_m1 * cashflows ** gamma_m1))
-        return np.float(u)
+        return float(u) # wjs np.float was deprecated
     elif gamma > 1.0:
         if 0.0 in cashflows:
             return -np.inf

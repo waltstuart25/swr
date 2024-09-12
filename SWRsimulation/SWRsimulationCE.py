@@ -40,6 +40,7 @@ class SWRsimulationCE(SWRsimulation):
             'variable_pct': input variable withdrawal pct
             'fixed': withdrawal in fixed units, initial portfolio * fixed_pct / 100
             'variable': withdrawal in variable fraction, variable_pct/100
+            'invest_expense': investment management expense as percent of current portfolio
         self.evaluation: dict of evaluation configs
             'gamma': risk aversion parameter
         self.visualization: dict of visualization configs
@@ -117,6 +118,9 @@ class SWRsimulationCE(SWRsimulation):
         self.withdrawal['fixed'] = self.withdrawal['fixed_pct'] / 100 * START_PORTVAL
         self.withdrawal['floor'] = self.withdrawal['floor_pct'] / 100 * START_PORTVAL
 
+        if self.withdrawal.get('invest_expense') is None: # wjs - adding investment expense
+            self.withdrawal['invest_expense'] = 0.0
+
         # initialize smoothing parameter (disabled)
         # if self.withdrawal.get('smoothing_factor') is None:
         #     self.withdrawal['smoothing_factor'] = 1.0
@@ -130,7 +134,7 @@ class SWRsimulationCE(SWRsimulation):
             float: withdrawal for current iteration
         """
         portval = self.latest_trial.portval
-        desired_withdrawal = portval * self.withdrawal['variable'] + self.withdrawal['fixed']
+        desired_withdrawal = portval * self.withdrawal['variable'] + self.withdrawal['fixed'] + self.withdrawal['invest_expense'] # wjs - adding investment expense
         # max floor, desired
         desired_withdrawal = max(desired_withdrawal, self.withdrawal['floor'])
         
